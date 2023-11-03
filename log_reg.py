@@ -49,7 +49,7 @@ def compute_loss(f_xi, y_i):
     return -(y_i * np.log(f_xi) + (1 - y_i) * np.log(1 - f_xi))
 
 
-def compute_cost(X, y, w, b, model):
+def compute_cost(X, y, w, b, lambda_, model):
     """Computes the cost for the current parameter values using the given model.
 
     Args:
@@ -57,6 +57,7 @@ def compute_cost(X, y, w, b, model):
         y (np.ndarray): Target values.
         w (np.ndarray): Coefficient parameters.
         b (float): Intercept parameter.
+        lambda_ (float): Regularization parameter.
         model (Callable): The model function.
 
     Returns:
@@ -70,10 +71,12 @@ def compute_cost(X, y, w, b, model):
         sum_loss += compute_loss(f_xi, y[i])
     cost = sum_loss / m
 
-    return cost
+    regularization = np.sum(w ** 2) * lambda_ / (2 * m)
+
+    return cost + regularization
 
 
-def compute_gradient(X, y, w, b, model):
+def compute_gradient(X, y, w, b, lambda_, model):
     """Computes the gradients that the parameters w and b will be updated by
 
     Args:
@@ -81,6 +84,7 @@ def compute_gradient(X, y, w, b, model):
         y (np.ndarray): Target values.
         w (np.ndarray): Coefficient parameters.
         b (float): Intercept parameter.
+        lambda_ (float): Regularization parameter.
         model (Callable): The model function.
 
     Returns:
@@ -93,7 +97,7 @@ def compute_gradient(X, y, w, b, model):
     for i in range(m):
         err = model(w, b, X[i]) - y[i]
         for j in range(n):
-            dj_dw[j] += err * X[i, j]
+            dj_dw[j] += err * X[i, j] + (w[j] * lambda_ / m)
         dj_db += err
 
     dj_dw /= m
@@ -102,7 +106,7 @@ def compute_gradient(X, y, w, b, model):
     return dj_dw, dj_db
 
 
-def gradient_descent(X, y, w_in, b_in, alpha, model, cost_func, grad_func, num_iter):
+def gradient_descent(X, y, w_in, b_in, alpha, lambda_, model, cost_func, grad_func, num_iter):
     """Runs gradient descent for the given number of iterations using the given model, cost function, and gradient function.
 
     Args:
@@ -111,6 +115,7 @@ def gradient_descent(X, y, w_in, b_in, alpha, model, cost_func, grad_func, num_i
         w_in (np.ndarray): Coefficient parameters.
         b_in (float): Intercept parameter.
         alpha (float): Learning rate.
+        lambda_ (float): Regularization parameter.
         model (Callable): The model function.
         cost_func (Callable): The cost function.
         grad_func (Callable): The gradient function.
@@ -119,18 +124,18 @@ def gradient_descent(X, y, w_in, b_in, alpha, model, cost_func, grad_func, num_i
     Returns:
         tuple: The final parameters w and b and the cost function history.
     """
-    J_hist = [cost_func(X, y, w_in, b_in, model)]
+    J_hist = [cost_func(X, y, w_in, b_in, lambda_, model)]
     w = copy.deepcopy(w_in)
     b = b_in
 
     i = 1
     while i <= num_iter:
-        dj_dw, dj_db = grad_func(X, y, w, b, model)
+        dj_dw, dj_db = grad_func(X, y, w, b, lambda_, model)
         w -= alpha * dj_dw
         b -= alpha * dj_db
 
         if i < 100000:
-            J_hist.append(cost_func(X, y, w, b, model))
+            J_hist.append(cost_func(X, y, w, b, lambda_, model))
 
         if i % math.ceil(num_iter / 10) == 0:
             print(f"Iteration: {i:5}, w: {w}, b: {b:0.3e}, Cost: {J_hist[-1]:0.3e}")

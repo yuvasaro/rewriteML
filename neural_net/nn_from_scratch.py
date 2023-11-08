@@ -1,5 +1,5 @@
 # 11/7/23
-# I built a basic neural network from scratch!
+# I built a basic neural network with backprop from scratch!
 
 import numpy as np
 import matplotlib.pyplot as plt

@@ -67,12 +67,12 @@ class NeuralNetwork:
         """Derivative of the ReLU function.
 
         Args:
-            z (np.ndarray): ReLU output evaluated at some input.
+            a (np.ndarray): ReLU output evaluated at some input.
 
         Returns:
             np.ndarray: ReLU derivative output.
         """
-        return (z > 0).astype(int)
+        return (a > 0).astype(int)
     
     def forward_back_prop(self, x, y):
         """Runs one iteration of forward propagation followed by back propagation.

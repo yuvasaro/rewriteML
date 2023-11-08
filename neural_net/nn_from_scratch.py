@@ -63,7 +63,7 @@ class NeuralNetwork:
         """
         return np.maximum(z, 0)
     
-    def relu_derivative(self, z):
+    def relu_derivative(self, a):
         """Derivative of the ReLU function.
 
         Args:

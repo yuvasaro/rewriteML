@@ -1,4 +1,4 @@
-# 11/7/23
+# 11/7/2023
 # I built a basic neural network with backprop from scratch!
 
 import numpy as np

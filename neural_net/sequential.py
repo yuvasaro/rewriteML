@@ -1,4 +1,4 @@
-# 11/5/23
+# 11/5/2023
 # Recently started learning neural networks. I learned to code forward propagation.
 
 import numpy as np

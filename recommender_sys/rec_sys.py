@@ -1,5 +1,6 @@
 # 11/26/2023
 # Simple implementation of a recommender system with content-based filtering.
+# Check README
 
 import tensorflow as tf
 
